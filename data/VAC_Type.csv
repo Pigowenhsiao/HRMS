@@ -1,0 +1,4 @@
+VAC_ID,VAC_DESC,Active
+01,特休,true
+02,病假,true
+03,事假,true

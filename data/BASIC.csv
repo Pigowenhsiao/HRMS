@@ -1,0 +1,4 @@
+EMP_ID,Dept_Code,C_Name,Title,On_Board_Date,Shift,Area,Function,Meno,Active,VAC_ID,VAC_DESC,Start_date,End_date,AreaDate
+000001,L2104,王小明,作業員,2020/01/01,A,A1,OP,N/A,true,01,特休,2020/01/01,,
+000002,L2104,李小華,技術員,2021/03/15,B,A2,TECH,N/A,true,02,病假,,,
+000003,L3101,張三,工程師,2019/11/20,C,B1,ENG,N/A,false,01,特休,,,

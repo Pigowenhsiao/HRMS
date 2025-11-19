@@ -1,0 +1,9 @@
+PySide6
+pandas
+openpyxl
+pydantic>=2.0
+python-dotenv
+PyYAML
+filelock
+fastapi
+uvicorn

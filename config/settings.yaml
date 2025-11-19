@@ -1,0 +1,5 @@
+app_name: HRMS CSV
+database:
+  backend: csv
+  csv:
+    data_dir: ./data
