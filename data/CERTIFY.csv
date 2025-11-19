@@ -1,0 +1,5 @@
+﻿識別碼,Certify,Certify_Desc,Active
+1,NEW,新增,True
+2,ReCer,重新Cewrtify,True
+3,MO,MO De-Certify,True
+4,Over_Due,超過時間,True

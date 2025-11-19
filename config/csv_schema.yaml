@@ -1,0 +1,28 @@
+# CSV 欄位規格（檢核用）
+# 若實際 CSV 欄位與此處不一致，`scripts/csv_schema_check.py` 會報告差異
+
+tables:
+  BASIC:
+    csv_name: BASIC
+    primary_key: EMP_ID
+    columns: [EMP_ID, Dept_Code, C_Name, Title, On_Board_Date, Shift, Area, Function, Meno, Active, VAC_ID, VAC_DESC, Start_date, End_date, AreaDate]
+
+  L_Section:
+    csv_name: L_Section
+    primary_key: Dept_Code
+    columns: [Dept_Code, Dept_Name, Dept_Desc, Supervisor]
+
+  Area:
+    csv_name: Area
+    primary_key: Area
+    columns: [Area, Area_Desc, Active]
+
+  L_Job:
+    csv_name: L_Job
+    primary_key: L_Job
+    columns: [L_Job]
+
+  VAC_Type:
+    csv_name: VAC_Type
+    primary_key: VAC_ID
+    columns: [VAC_ID, VAC_DESC, Active]

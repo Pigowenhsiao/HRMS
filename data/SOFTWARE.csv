@@ -1,0 +1,13 @@
+﻿S_Ver,Meno,Update_Date,Active
+0.01  ,New Create                                                      ,20140116            ,False
+0.02  ,新增權限控制                                                          ,20140116            ,False
+0.03  ,新增人員基本資料                                                        ,20140122            ,False
+0.031 ,"修正Certify資料記錄方式,增加編號,避免相同項目更新時被同時更新                             ",20140123            ,False
+0.032 ,mes 權限update寫入正式區                                               ,20140127            ,False
+0.033 ,先用暫時方法卡物料Key in                                                 ,20140205            ,False
+0.034 ,New Create Report Function                                      ,20140211            ,False
+0.035 ,Add report function for Multi-function TE project               ,20140329            ,False
+0.036 ,Connection set nothing in the END                               ,20140616            ,False
+0.037 ,New Create Report Function                                      ,20140211            ,False
+0.038 ,New Create Report Function                                      ,20140211            ,False
+0.039 ,New Create Report Function                                      ,20140211            ,True

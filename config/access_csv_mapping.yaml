@@ -1,0 +1,30 @@
+# 將 Access 表/欄位對應到 CSV 的設定（匯出用）
+# 若不需要對應/更名，可刪除或留空（匯出腳本會以原表名/欄位導出）
+
+tables:
+  BASIC:
+    csv_name: BASIC
+    # 欄位順序（未列出的欄位將略過）
+    columns: [EMP_ID, Dept_Code, C_Name, Title, On_Board_Date, Shift, Area, Function, Meno, Active, VAC_ID, VAC_DESC, Start_date, End_date, AreaDate]
+    # 欄位更名（Access 欄位名 -> CSV 欄位名）
+    rename: {}
+
+  L_Section:
+    csv_name: L_Section
+    columns: [Dept_Code, Dept_Name, Dept_Desc, Supervisor]
+    rename: {}
+
+  Area:
+    csv_name: Area
+    columns: [Area, Area_Desc, Active]
+    rename: {}
+
+  L_Job:
+    csv_name: L_Job
+    columns: [L_Job]
+    rename: {}
+
+  VAC_Type:
+    csv_name: VAC_Type
+    columns: [VAC_ID, VAC_DESC, Active]
+    rename: {}

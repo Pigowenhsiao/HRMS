@@ -1,3 +1,15 @@
-Dept_Code,Dept_Name,Dept_Desc,Supervisor
-L2104,製造一課,,
-L3101,製造二課,,
+﻿Dept_Code,Dept_Name,Dept_Desc
+L21041              ,Manufacturing - 1 Section               ,製造一課                                    
+L21042              ,Manufacturing - 2 Section               ,製造二課                                    
+L21043              ,MFG Planning & Support Section          ,生產規劃暨製造課                                
+L21045              ,Project Training Section                ,專案訓練課                                   
+L2104A              ,Manufacturing - 1 Section-DA            ,製造一課日A                                  
+L2104B              ,Manufacturing - 1 Section-DB            ,製造一課日B                                  
+L2104C              ,Manufacturing - 1 Section-NA            ,製造一課夜A                                  
+L2104D              ,Manufacturing - 1 Section-NB            ,製造一課夜B                                  
+L2104E              ,Manufacturing - 2 Section-DA            ,製造二課日A                                  
+L2104F              ,Manufacturing - 2 Section-DB            ,製造二課日B                                  
+L2104G              ,Manufacturing - 2 Section-NA            ,製造二課夜A                                  
+L2104H              ,Manufacturing - 2 Section-NB            ,製造二課夜B                                  
+L21040              ,Manufacturing Dept                      ,製造部                                     
+L21046              ,Project Training Section                ,專案訓練課                                   

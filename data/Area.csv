@@ -1,4 +1,17 @@
-Area,Area_Desc,Active
-A1,沖壓,true
-A2,組裝,true
-B1,塗裝,true
+﻿Area,Area_Desc,Active
+EPI,EPI操作員,True
+SiSub,SiSub 操作員,True
+Keyin,Keyin,True
+Manager,Manager,True
+Supervisor,Supervisor,True
+iflow後段,iFlow-後段工作人員,True
+助理,常日助理,True
+PKG前段,PKG-前段工作人員,True
+PKG後段,PKG-後段工作人員,True
+iflow前段,iFlow-前段工作人員,True
+Phosphor,螢光粉區作業人員,True
+物管,物管作業人員,True
+SHR,Super Hot Run Team,True
+Wafer Start,Wafer Start 人員,True
+PKG全區,PKG 前後段,True
+Supporting,Keyin&SHR&助理,True

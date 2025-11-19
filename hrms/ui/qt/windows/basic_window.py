@@ -3,9 +3,9 @@ from PySide6.QtWidgets import (
     QPushButton, QTableWidget, QTableWidgetItem, QMessageBox, QComboBox
 )
 from PySide6.QtCore import Qt
-from ...persons.service import list_employees, get_employee, upsert_employee, delete_employee
-from ...lookups.service import list_dept_codes, list_areas, list_jobs, list_vac_types
-from ...core.reporting.reports import df_to_excel
+from hrms.persons.service import list_employees, get_employee, upsert_employee, delete_employee
+from hrms.lookups.service import list_dept_codes, list_areas, list_jobs, list_vac_types
+from hrms.core.reporting.reports import df_to_excel
 import pandas as pd
 
 class BasicWindow(QDialog):
