@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QFormLayout, QLineEdit, QCheckBox,
-    QPushButton, QTableWidget, QTableWidgetItem, QMessageBox, QComboBox
+    QPushButton, QTableWidget, QTableWidgetItem, QMessageBox, QComboBox, QAbstractItemView
 )
 from PySide6.QtCore import Qt
 from hrms.persons.service import list_employees, get_employee, upsert_employee, delete_employee
@@ -60,8 +60,8 @@ class BasicWindow(QDialog):
         self.table.setHorizontalHeaderLabels([
             "EMP_ID","Dept_Code","C_Name","Title","On_Board_Date","Shift","Area","Function","Meno","Active"
         ])
-        self.table.setSelectionBehavior(self.table.SelectRows)
-        self.table.setEditTriggers(self.table.NoEditTriggers)
+        self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
         # layout
         root = QVBoxLayout(self)
