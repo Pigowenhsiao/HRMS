@@ -12,8 +12,10 @@ class DBSettings(BaseModel):
     csv: CSVSettings = CSVSettings()
 
 class Settings(BaseModel):
-    app_name: str = os.getenv("APP_NAME", "HRMS CSV")
+    app_name: str = os.getenv("APP_NAME", "HRMS Multi-Backend")
     database: DBSettings = DBSettings()
+    # Access 資料庫路徑
+    access_db_path: str = os.getenv("ACCESS_DB_PATH", "./hrms.mdb")
 
 def load_settings_from_yaml(path: str = "config/settings.yaml") -> Settings:
     base = Settings()

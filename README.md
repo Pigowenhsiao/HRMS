@@ -2,10 +2,10 @@
 
 ---
 
-# HRMS (Python • CSV Backend)
+# HRMS (Python • Multi Backend)
 
-> 以 **Python + PySide6** 重構的 HRMS（人資/員工管理）範例，將原本 **VB.NET + Access** 的資料存取層改為 **`.csv` 檔案**。
-> 特色：桌面 UI、CSV 儲存引擎（含檔案鎖與原子寫入）、匯出 Excel、（可選）FastAPI API。
+> 以 **Python + PySide6** 重構的 HRMS（人資/員工管理）範例，支援多種資料存取後端（**`.csv` 檔案** 或 **Access Database**）。
+> 特色：桌面 UI、CSV 儲存引擎（含檔案鎖與原子寫入）/Access 資料庫支援、匯出 Excel、（可選）FastAPI API。
 
 ## 目錄
 
@@ -40,8 +40,10 @@
 ├─ README.md
 ├─ requirements.txt
 ├─ .env.example
+├─ config.py                      # 配置管理（支援 CSV 和 Access）
+├─ db.py                          # SQLAlchemy 配置（保留向後兼容）
+├─ .env                           # 環境變數配置
 ├─ config/
-│  └─ settings.yaml               # 預設 backend: csv、data_dir: ./data
 ├─ data/                          # ★ 所有 CSV 檔（資料表）放這裡
 │  ├─ BASIC.csv                   # 員工主檔（已附範例資料）
 │  ├─ L_Section.csv               # 部門對照
@@ -50,26 +52,30 @@
 │  └─ VAC_Type.csv                # 假別對照
 ├─ hrms/
 │  ├─ core/
-│  │  ├─ config.py                # 讀取 .env + settings.yaml
+│  │  ├─ config.py                # 讀取 .env 配置
 │  │  ├─ utils/logger.py
 │  │  ├─ db/
 │  │  │  ├─ database.py           # DBAdapter 介面（抽象）
-│  │  │  ├─ adapters/csv_adapter.py# CSVAdapter：list/get/upsert/delete/distinct
+│  │  │  ├─ adapters/
+│  │  │  │  ├─ csv_adapter.py     # CSVAdapter：list/get/upsert/delete/distinct
+│  │  │  │  └─ access_adapter.py  # AccessAdapter：支援 Access 資料庫
 │  │  │  ├─ repository.py         # BaseRepository
-│  │  │  └─ unit_of_work.py       # UnitOfWork（CSV 版）
+│  │  │  └─ unit_of_work.py       # UnitOfWork（支援 CSV 和 Access）
 │  │  └─ reporting/reports.py     # DataFrame → Excel 匯出
 │  ├─ persons/
 │  │  ├─ models.py                # BASIC 資料列 dataclass（可擴充）
-│  │  ├─ repository.py            # EmployeeRepositoryCSV
+│  │  ├─ repository.py            # EmployeeRepository（支援 CSV 和 Access）
 │  │  └─ service.py               # 封裝 repo（供 UI/API 使用）
 │  ├─ lookups/
-│  │  └─ service.py               # 下拉選單資料（從 CSV 讀）
+│  │  └─ service.py               # 下拉選單資料（支援 CSV 和 Access）
 │  ├─ ui/qt/
 │  │  ├─ start_app.py             # 桌面版進入點
 │  │  └─ windows/
 │  │     ├─ start_page.py         # 主畫面（選單）
 │  │     └─ basic_window.py       # TE_BASIC（員工基本資料）
-│  └─ api/server.py               # FastAPI（可選）
+│  ├─ api/server.py               # FastAPI（可選）
+│  └─ migrate_csv_to_access.py    # CSV 資料遷移至 Access 工具
+├─ openspec/                      # 專案規範文件
 └─ tests/
    └─ test_sanity.py
 ```
@@ -94,7 +100,10 @@ pip install -r requirements.txt
 # 3) 建立設定檔
 cp .env.example .env
 
-# 4) 啟動桌面 App
+# 4) 如果使用 Access 資料庫，可以將現有 CSV 資料遷移至 Access
+python -m hrms.migrate_csv_to_access
+
+# 5) 啟動桌面 App
 python -m hrms.ui.qt.start_app
 ```
 
@@ -108,26 +117,23 @@ python -m hrms.ui.qt.start_app
 
 ```ini
 # 應用名稱（UI 視窗標題等）
-APP_NAME=HRMS CSV
+APP_NAME=HRMS Multi-Backend
 
-# 後端：目前為 csv（保留欄位，便於日後擴充其他後端）
-HRMS_DB_BACKEND=csv
+# 後端：csv 或 access
+HRMS_DB_BACKEND=access
 
-# CSV 資料目錄（預設 ./data）
+# CSV 資料目錄（當使用 CSV 時）
 HRMS_CSV_DATA_DIR=./data
+
+# Access 資料庫路徑（當使用 Access 時）
+ACCESS_DB_PATH=./hrms.mdb
 ```
 
-### `config/settings.yaml`
+### `config.py`
 
-```yaml
-app_name: HRMS CSV
-database:
-  backend: csv
-  csv:
-    data_dir: ./data
-```
+系統現在使用 `config.py` 作為主要配置管理，支援環境變數配置。
 
-> `.env` 會覆蓋 `settings.yaml`。修改後重啟應用生效。
+> 修改 `.env` 後重啟應用生效。
 
 ---
 
@@ -181,12 +187,18 @@ uvicorn hrms.api.server:app --reload
 
 ## 開發指引
 
-* **新增一張 CSV 表**（範例流程）
+* **選擇後端類型**
 
-  1. 在 `data/` 建立對應的 `TABLE_NAME.csv`（先放表頭欄位）。
-  2. 建新的 Repository（參考 `persons/repository.py`）並指定表名/主鍵/欄位。
-  3. 在 Service 層封裝方法（如 `list_* / get_* / upsert_* / delete_*`）。
-  4. UI 透過 Service 呼叫，維持單向依賴。
+  1. 在 `.env` 中設定 `HRMS_DB_BACKEND=csv` 或 `HRMS_DB_BACKEND=access` 來選擇後端。
+  2. 如使用 Access，可透過 `hrms.migrate_csv_to_access.py` 將現有 CSV 資料遷移至 Access 資料庫。
+
+* **新增一張表**（CSV 或 Access，範例流程）
+
+  1. 如使用 CSV：在 `data/` 建立對應的 `TABLE_NAME.csv`（先放表頭欄位）。
+  2. 如使用 Access：直接在 Access 資料庫中建立對應表格。
+  3. 建新的 Repository（參考 `persons/repository.py`）並指定表名/主鍵/欄位。
+  4. 在 Service 層封裝方法（如 `list_* / get_* / upsert_* / delete_*`）。
+  5. UI 透過 Service 呼叫，維持單向依賴。
 * **測試**：
 
   ```bash

@@ -7,3 +7,4 @@ PyYAML
 filelock
 fastapi
 uvicorn
+pyodbc
