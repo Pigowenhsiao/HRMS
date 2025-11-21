@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 from filelock import FileLock
 import os
-from ...core.exceptions import DatabaseConnectionError, RecordNotFoundError, DuplicateRecordError
+from ...exceptions import DatabaseConnectionError, RecordNotFoundError, DuplicateRecordError
 
 class CSVAdapter:
     def __init__(self, data_dir: str):

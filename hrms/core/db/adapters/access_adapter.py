@@ -3,7 +3,7 @@ from typing import Dict, List, Optional
 from pathlib import Path
 import pyodbc
 from ..database import DBAdapter
-from ..exceptions import DatabaseConnectionError, RecordNotFoundError, DuplicateRecordError
+from ...exceptions import DatabaseConnectionError, RecordNotFoundError, DuplicateRecordError
 
 class AccessAdapter(DBAdapter):
     """
