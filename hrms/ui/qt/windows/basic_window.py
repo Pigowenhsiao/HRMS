@@ -6,12 +6,14 @@ from PySide6.QtCore import Qt
 from ...persons.service import list_employees, get_employee, upsert_employee, delete_employee
 from ...lookups.service import list_dept_codes, list_areas, list_jobs, list_vac_types
 from ...core.reporting.reports import df_to_excel
+from ...core.exceptions import HRMSException, DataValidationError, RecordNotFoundError
+from ...core.utils.logger import log_exception
 import pandas as pd
 
 class BasicWindow(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("員工基本資料（CSV 版）")
+        self.setWindowTitle("員工基本資料（支援 Access）")
         self.resize(980, 680)
 
         # form
@@ -83,76 +85,117 @@ class BasicWindow(QDialog):
         self.populate()
 
     def _load_lookups(self):
-        self.dept.clear(); self.dept.addItems(list_dept_codes())
-        self.area.clear(); self.area.addItems(list_areas())
-        self.job.clear(); self.job.addItems(list_jobs())
-        self.vac.clear(); self.vac.addItems(list_vac_types())
+        try:
+            self.dept.clear(); self.dept.addItems(list_dept_codes())
+            self.area.clear(); self.area.addItems(list_areas())
+            self.job.clear(); self.job.addItems(list_jobs())
+            self.vac.clear(); self.vac.addItems(list_vac_types())
+        except Exception as e:
+            log_exception(f"載入下拉選單資料時發生錯誤: {str(e)}")
+            QMessageBox.critical(self, "錯誤", f"載入下拉選單資料時發生錯誤: {str(e)}")
 
     def populate(self):
-        rows = list_employees(only_active=False, limit=500)
-        self.table.setRowCount(0)
-        for r in rows:
-            i = self.table.rowCount()
-            self.table.insertRow(i)
-            vals = [r.get("EMP_ID",""), r.get("Dept_Code",""), r.get("C_Name",""), r.get("Title",""),
-                    r.get("On_Board_Date",""), r.get("Shift",""), r.get("Area",""), r.get("Function",""),
-                    r.get("Meno",""), "Y" if (r.get("Active","").lower()=="true") else "N"]
-            for c, v in enumerate(vals):
-                self.table.setItem(i, c, QTableWidgetItem(str(v)))
+        try:
+            rows = list_employees(only_active=False, limit=500)
+            self.table.setRowCount(0)
+            for r in rows:
+                i = self.table.rowCount()
+                self.table.insertRow(i)
+                vals = [r.get("EMP_ID",""), r.get("Dept_Code",""), r.get("C_Name",""), r.get("Title",""),
+                        r.get("On_Board_Date",""), r.get("Shift",""), r.get("Area",""), r.get("Function",""),
+                        r.get("Meno",""), "Y" if (r.get("Active","").lower()=="true") else "N"]
+                for c, v in enumerate(vals):
+                    self.table.setItem(i, c, QTableWidgetItem(str(v)))
+        except HRMSException as e:
+            log_exception(f"填充表格時發生錯誤: {str(e)}")
+            QMessageBox.critical(self, "錯誤", f"填充表格時發生錯誤: {str(e)}")
+        except Exception as e:
+            log_exception(f"填充表格時發生未預期錯誤: {str(e)}")
+            QMessageBox.critical(self, "錯誤", f"填充表格時發生未預期錯誤: {str(e)}")
 
     def on_load(self):
-        emp_id = self.emp_id.text().strip()
-        if not emp_id:
-            QMessageBox.warning(self, "提示", "請輸入 EMP_ID")
-            return
-        r = get_employee(emp_id)
-        if not r:
-            QMessageBox.information(self, "訊息", f"查無 EMP_ID={emp_id}")
-            return
-        self.dept.setCurrentText(r.get("Dept_Code",""))
-        self.name.setText(r.get("C_Name","") or "")
-        self.title.setText(r.get("Title","") or "")
-        self.onboard.setText(r.get("On_Board_Date","") or "")
-        self.shift.setText(r.get("Shift","") or "")
-        self.area.setCurrentText(r.get("Area","") or "")
-        self.job.setCurrentText(r.get("Function","") or "")
-        self.meno.setText(r.get("Meno","") or "")
-        self.active.setChecked(r.get("Active","").lower()=="true")
-        self.vac.setCurrentText(r.get("VAC_ID","") or "")
+        try:
+            emp_id = self.emp_id.text().strip()
+            if not emp_id:
+                QMessageBox.warning(self, "提示", "請輸入 EMP_ID")
+                return
+            r = get_employee(emp_id)
+            if not r:
+                QMessageBox.information(self, "訊息", f"查無 EMP_ID={emp_id}")
+                return
+            self.dept.setCurrentText(r.get("Dept_Code",""))
+            self.name.setText(r.get("C_Name","") or "")
+            self.title.setText(r.get("Title","") or "")
+            self.onboard.setText(r.get("On_Board_Date","") or "")
+            self.shift.setText(r.get("Shift","") or "")
+            self.area.setCurrentText(r.get("Area","") or "")
+            self.job.setCurrentText(r.get("Function","") or "")
+            self.meno.setText(r.get("Meno","") or "")
+            self.active.setChecked(r.get("Active","").lower()=="true")
+            self.vac.setCurrentText(r.get("VAC_ID","") or "")
+        except RecordNotFoundError as e:
+            log_exception(f"載入員工資料時發生錯誤: {str(e)}")
+            QMessageBox.warning(self, "警告", str(e))
+        except HRMSException as e:
+            log_exception(f"載入員工資料時發生錯誤: {str(e)}")
+            QMessageBox.critical(self, "錯誤", f"載入員工資料時發生錯誤: {str(e)}")
+        except Exception as e:
+            log_exception(f"載入員工資料時發生未預期錯誤: {str(e)}")
+            QMessageBox.critical(self, "錯誤", f"載入員工資料時發生未預期錯誤: {str(e)}")
 
     def on_save(self):
-        emp_id = self.emp_id.text().strip()
-        if not emp_id:
-            QMessageBox.warning(self, "提示", "EMP_ID 不可空白")
-            return
-        row = {
-            "EMP_ID": emp_id,
-            "Dept_Code": self.dept.currentText().strip() or "",
-            "C_Name": self.name.text().strip() or "",
-            "Title": self.title.text().strip() or "",
-            "On_Board_Date": self.onboard.text().strip() or "",
-            "Shift": self.shift.text().strip() or "",
-            "Area": self.area.currentText().strip() or "",
-            "Function": self.job.currentText().strip() or "",
-            "Meno": self.meno.text().strip() or "",
-            "Active": "true" if self.active.isChecked() else "false",
-            "VAC_ID": self.vac.currentText().split()[0] if self.vac.currentText().strip() else "",
-        }
-        upsert_employee(row)
-        QMessageBox.information(self, "完成", f"已儲存 EMP_ID={emp_id}")
-        self.populate()
+        try:
+            emp_id = self.emp_id.text().strip()
+            if not emp_id:
+                QMessageBox.warning(self, "提示", "EMP_ID 不可空白")
+                return
+            row = {
+                "EMP_ID": emp_id,
+                "Dept_Code": self.dept.currentText().strip() or "",
+                "C_Name": self.name.text().strip() or "",
+                "Title": self.title.text().strip() or "",
+                "On_Board_Date": self.onboard.text().strip() or "",
+                "Shift": self.shift.text().strip() or "",
+                "Area": self.area.currentText().strip() or "",
+                "Function": self.job.currentText().strip() or "",
+                "Meno": self.meno.text().strip() or "",
+                "Active": "true" if self.active.isChecked() else "false",
+                "VAC_ID": self.vac.currentText().split()[0] if self.vac.currentText().strip() else "",
+            }
+            upsert_employee(row)
+            QMessageBox.information(self, "完成", f"已儲存 EMP_ID={emp_id}")
+            self.populate()
+        except DataValidationError as e:
+            log_exception(f"儲存員工資料時發生驗證錯誤: {str(e)}")
+            QMessageBox.warning(self, "警告", f"儲存員工資料時發生驗證錯誤: {str(e)}")
+        except HRMSException as e:
+            log_exception(f"儲存員工資料時發生錯誤: {str(e)}")
+            QMessageBox.critical(self, "錯誤", f"儲存員工資料時發生錯誤: {str(e)}")
+        except Exception as e:
+            log_exception(f"儲存員工資料時發生未預期錯誤: {str(e)}")
+            QMessageBox.critical(self, "錯誤", f"儲存員工資料時發生未預期錯誤: {str(e)}")
 
     def on_delete(self):
-        emp_id = self.emp_id.text().strip()
-        if not emp_id:
-            QMessageBox.warning(self, "提示", "請輸入 EMP_ID")
-            return
-        if QMessageBox.question(self, "確認", f"確定要刪除 EMP_ID={emp_id} ?") == QMessageBox.Yes:
-            if delete_employee(emp_id):
-                QMessageBox.information(self, "完成", f"已刪除 EMP_ID={emp_id}")
-                self.populate()
-            else:
-                QMessageBox.warning(self, "提示", f"找不到 EMP_ID={emp_id}")
+        try:
+            emp_id = self.emp_id.text().strip()
+            if not emp_id:
+                QMessageBox.warning(self, "提示", "請輸入 EMP_ID")
+                return
+            if QMessageBox.question(self, "確認", f"確定要刪除 EMP_ID={emp_id} ?") == QMessageBox.Yes:
+                if delete_employee(emp_id):
+                    QMessageBox.information(self, "完成", f"已刪除 EMP_ID={emp_id}")
+                    self.populate()
+                else:
+                    QMessageBox.warning(self, "提示", f"找不到 EMP_ID={emp_id}")
+        except RecordNotFoundError as e:
+            log_exception(f"刪除員工資料時發生錯誤: {str(e)}")
+            QMessageBox.warning(self, "警告", str(e))
+        except HRMSException as e:
+            log_exception(f"刪除員工資料時發生錯誤: {str(e)}")
+            QMessageBox.critical(self, "錯誤", f"刪除員工資料時發生錯誤: {str(e)}")
+        except Exception as e:
+            log_exception(f"刪除員工資料時發生未預期錯誤: {str(e)}")
+            QMessageBox.critical(self, "錯誤", f"刪除員工資料時發生未預期錯誤: {str(e)}")
 
     def on_clear(self):
         self.emp_id.clear(); self.dept.setCurrentText(""); self.name.clear(); self.title.clear()
@@ -160,7 +203,11 @@ class BasicWindow(QDialog):
         self.meno.clear(); self.active.setChecked(True); self.vac.setCurrentText("")
 
     def on_export(self):
-        rows = list_employees(only_active=False, limit=500)
-        df = pd.DataFrame(rows)
-        path = df_to_excel(df, prefix="BASIC_list")
-        QMessageBox.information(self, "完成", f"已匯出：\n{path}")
+        try:
+            rows = list_employees(only_active=False, limit=500)
+            df = pd.DataFrame(rows)
+            path = df_to_excel(df, prefix="BASIC_list")
+            QMessageBox.information(self, "完成", f"已匯出：\n{path}")
+        except Exception as e:
+            log_exception(f"匯出 Excel 時發生錯誤: {str(e)}")
+            QMessageBox.critical(self, "錯誤", f"匯出 Excel 時發生錯誤: {str(e)}")

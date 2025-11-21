@@ -1,10 +1,29 @@
+# GUI 框架
 PySide6
+
+# 資料處理
 pandas
+
+# Excel 匯出
 openpyxl
+
+# 資料驗證
 pydantic>=2.0
+
+# 環境變數管理
 python-dotenv
+
+# YAML 配置文件處理
 PyYAML
+
+# CSV 檔案鎖定機制
 filelock
+
+# API 框架
 fastapi
+
+# ASGI 伺服器
 uvicorn
+
+# Microsoft Access 資料庫連接 (Windows 需另外安裝 Access Database Engine)
 pyodbc
