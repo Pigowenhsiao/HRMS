@@ -51,8 +51,8 @@ class CertifyTypeWindow(QDialog):
         for _, row in df.iterrows():
             i = self.table.rowCount()
             self.table.insertRow(i)
-            self.table.setItem(i, 0, QTableWidgetItem(str(row["Type_ID"])))
-            self.table.setItem(i, 1, QTableWidgetItem(str(row["Type_Name"])))
+            self.table.setItem(i, 0, QTableWidgetItem(str(row.get("Type_ID", ""))))
+            self.table.setItem(i, 1, QTableWidgetItem(str(row.get("Type_Name", ""))))
     def on_load(self):
         type_id = self.type_id.text().strip()
         if not type_id:

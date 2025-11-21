@@ -65,8 +65,8 @@ class VacTypeWindow(QDialog):
         for _, row in df.iterrows():
             i = self.table.rowCount()
             self.table.insertRow(i)
-            self.table.setItem(i, 0, QTableWidgetItem(str(row["VAC_ID"])))
-            self.table.setItem(i, 1, QTableWidgetItem(str(row["VAC_Name"])))
+            self.table.setItem(i, 0, QTableWidgetItem(str(row.get("VAC_ID", ""))))
+            self.table.setItem(i, 1, QTableWidgetItem(str(row.get("VAC_Name", ""))))
 
     def on_load(self):
         vac_id = self.vac_id.text().strip()

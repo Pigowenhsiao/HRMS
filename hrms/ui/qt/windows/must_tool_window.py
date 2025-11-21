@@ -51,8 +51,8 @@ class MustToolWindow(QDialog):
         for _, row in df.iterrows():
             i = self.table.rowCount()
             self.table.insertRow(i)
-            self.table.setItem(i, 0, QTableWidgetItem(str(row["Tool_ID"])))
-            self.table.setItem(i, 1, QTableWidgetItem(str(row["Tool_Name"])))
+            self.table.setItem(i, 0, QTableWidgetItem(str(row.get("Tool_ID", ""))))
+            self.table.setItem(i, 1, QTableWidgetItem(str(row.get("Tool_Name", ""))))
     def on_load(self):
         tool_id = self.tool_id.text().strip()
         if not tool_id:

@@ -51,8 +51,8 @@ class CertifyWindow(QDialog):
         for _, row in df.iterrows():
             i = self.table.rowCount()
             self.table.insertRow(i)
-            self.table.setItem(i, 0, QTableWidgetItem(str(row["Certify_ID"])))
-            self.table.setItem(i, 1, QTableWidgetItem(str(row["Certify_Name"])))
+            self.table.setItem(i, 0, QTableWidgetItem(str(row.get("Certify_ID", ""))))
+            self.table.setItem(i, 1, QTableWidgetItem(str(row.get("Certify_Name", ""))))
     def on_load(self):
         certify_id = self.certify_id.text().strip()
         if not certify_id:

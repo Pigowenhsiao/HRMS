@@ -65,8 +65,8 @@ class AreaWindow(QDialog):
         for _, row in df.iterrows():
             i = self.table.rowCount()
             self.table.insertRow(i)
-            self.table.setItem(i, 0, QTableWidgetItem(str(row["Area_ID"])))
-            self.table.setItem(i, 1, QTableWidgetItem(str(row["Area_Name"])))
+            self.table.setItem(i, 0, QTableWidgetItem(str(row.get("Area_ID", ""))))
+            self.table.setItem(i, 1, QTableWidgetItem(str(row.get("Area_Name", ""))))
 
     def on_load(self):
         area_id = self.area_id.text().strip()

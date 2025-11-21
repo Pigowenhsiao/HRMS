@@ -8,23 +8,19 @@ class CertifyItemsWindow(QDialog):
         self.setWindowTitle("證照項目（CERTIFY_ITEMS）管理")
         self.resize(600, 400)
         form = QFormLayout()
-        self.item_id = QLineEdit()
-        self.item_name = QLineEdit()
-        form.addRow("Item_ID", self.item_id)
-        form.addRow("Item_Name", self.item_name)
+        self.certify_id = QLineEdit()
+        self.certify_name = QLineEdit()
+        form.addRow("Certify_ID", self.certify_id)
+        form.addRow("Certify_Name", self.certify_name)
         btns = QHBoxLayout()
         self.btn_load = QPushButton("載入")
         self.btn_save = QPushButton("新增/更新")
         self.btn_delete = QPushButton("刪除")
         self.btn_clear = QPushButton("清空")
         self.btn_refresh = QPushButton("刷新清單")
-        btns.addWidget(self.btn_load)
-        btns.addWidget(self.btn_save)
-        btns.addWidget(self.btn_delete)
-        btns.addWidget(self.btn_clear)
         btns.addWidget(self.btn_refresh)
         self.table = QTableWidget(0, 2)
-        self.table.setHorizontalHeaderLabels(["Item_ID", "Item_Name"])
+        self.table.setHorizontalHeaderLabels(["Certify_ID", "Certify_Name"])
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         root = QVBoxLayout(self)
@@ -34,14 +30,14 @@ class CertifyItemsWindow(QDialog):
         self.btn_load.clicked.connect(self.on_load)
         self.btn_save.clicked.connect(self.on_save)
         self.btn_delete.clicked.connect(self.on_delete)
-        self.btn_clear.clicked.connect(self.on_clear)
+        self.table.setHorizontalHeaderLabels(["Certify_ID", "Certify_Name"])
         self.btn_refresh.clicked.connect(self.populate)
         self.populate()
     def read_csv(self):
         try:
             df = pd.read_csv(DATA_PATH, encoding='utf-8')
         except Exception:
-            df = pd.DataFrame(columns=["Item_ID", "Item_Name"])
+            df = pd.DataFrame(columns=["Certify_ID", "Certify_Name"])
         return df
     def write_csv(self, df):
         df.to_csv(DATA_PATH, index=False, encoding='utf-8')
@@ -51,48 +47,48 @@ class CertifyItemsWindow(QDialog):
         for _, row in df.iterrows():
             i = self.table.rowCount()
             self.table.insertRow(i)
-            self.table.setItem(i, 0, QTableWidgetItem(str(row["Item_ID"])))
-            self.table.setItem(i, 1, QTableWidgetItem(str(row["Item_Name"])))
+            self.table.setItem(i, 0, QTableWidgetItem(str(row.get("Certify_ID", ""))))
+            self.table.setItem(i, 1, QTableWidgetItem(str(row.get("Certify_Name", ""))))
     def on_load(self):
-        item_id = self.item_id.text().strip()
-        if not item_id:
-            QMessageBox.warning(self, "提示", "請輸入 Item_ID")
+        certify_id = self.certify_id.text().strip()
+        if not certify_id:
+            QMessageBox.warning(self, "提示", "請輸入 Certify_ID")
             return
         df = self.read_csv()
-        row = df[df["Item_ID"] == item_id]
+        row = df[df["Certify_ID"] == certify_id]
         if row.empty:
-            QMessageBox.information(self, "訊息", f"查無 Item_ID={item_id}")
+            QMessageBox.information(self, "訊息", f"查無 Certify_ID={certify_id}")
             return
-        self.item_name.setText(str(row.iloc[0]["Item_Name"]))
+        self.certify_name.setText(str(row.iloc[0]["Certify_Name"]))
     def on_save(self):
-        item_id = self.item_id.text().strip()
-        item_name = self.item_name.text().strip()
-        if not item_id:
-            QMessageBox.warning(self, "提示", "Item_ID 不可空白")
+        certify_id = self.certify_id.text().strip()
+        certify_name = self.certify_name.text().strip()
+        if not certify_id:
+            QMessageBox.warning(self, "提示", "Certify_ID 不可空白")
             return
         df = self.read_csv()
-        idx = df[df["Item_ID"] == item_id].index
+        idx = df[df["Certify_ID"] == certify_id].index
         if len(idx) > 0:
-            df.loc[idx, "Item_Name"] = item_name
+            df.loc[idx, "Certify_Name"] = certify_name
         else:
-            df = pd.concat([df, pd.DataFrame({"Item_ID": [item_id], "Item_Name": [item_name]})], ignore_index=True)
+            df = pd.concat([df, pd.DataFrame({"Certify_ID": [certify_id], "Certify_Name": [certify_name]})], ignore_index=True)
         self.write_csv(df)
-        QMessageBox.information(self, "完成", f"已儲存 Item_ID={item_id}")
+        QMessageBox.information(self, "完成", f"已儲存 Certify_ID={certify_id}")
         self.populate()
     def on_delete(self):
-        item_id = self.item_id.text().strip()
-        if not item_id:
-            QMessageBox.warning(self, "提示", "請輸入 Item_ID")
+        certify_id = self.certify_id.text().strip()
+        if not certify_id:
+            QMessageBox.warning(self, "提示", "請輸入 Certify_ID")
             return
         df = self.read_csv()
-        idx = df[df["Item_ID"] == item_id].index
+        idx = df[df["Certify_ID"] == certify_id].index
         if len(idx) > 0:
             df = df.drop(idx)
             self.write_csv(df)
-            QMessageBox.information(self, "完成", f"已刪除 Item_ID={item_id}")
+            QMessageBox.information(self, "完成", f"已刪除 Certify_ID={certify_id}")
             self.populate()
         else:
-            QMessageBox.warning(self, "提示", f"找不到 Item_ID={item_id}")
+            QMessageBox.warning(self, "提示", f"找不到 Certify_ID={certify_id}")
     def on_clear(self):
-        self.item_id.clear()
-        self.item_name.clear()
+        self.certify_id.clear()
+        self.certify_name.clear()

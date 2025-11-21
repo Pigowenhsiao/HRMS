@@ -51,8 +51,8 @@ class AuthorityWindow(QDialog):
         for _, row in df.iterrows():
             i = self.table.rowCount()
             self.table.insertRow(i)
-            self.table.setItem(i, 0, QTableWidgetItem(str(row["Auth_ID"])))
-            self.table.setItem(i, 1, QTableWidgetItem(str(row["Auth_Name"])))
+            self.table.setItem(i, 0, QTableWidgetItem(str(row.get("Auth_ID", ""))))
+            self.table.setItem(i, 1, QTableWidgetItem(str(row.get("Auth_Name", ""))))
     def on_load(self):
         auth_id = self.auth_id.text().strip()
         if not auth_id:
