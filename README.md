@@ -269,7 +269,9 @@ pytest
 * **多人同時寫入會不會壞檔？**
   當使用 CSV 後端時，本專案寫入採用 **檔案鎖（filelock）** + **寫臨時檔後原子改名**，能降低風險；但 CSV 非資料庫，不具事務與鎖粒度控制。若有多人同時寫入或高併發，建議使用 Access 或其他資料庫後端。
 * **如何從 CSV 遷移到 Access？**
-  更新 `.env` 中的設定為 `HRMS_DB_BACKEND=access`，然後運行 `python -m hrms.migrate_csv_to_access` 來將現有 CSV 資料遷移到 Access 資料庫。
+  確保您的 Windows 系統已安裝 Microsoft Access Database Engine，然後更新 `.env` 中的設定為 `HRMS_DB_BACKEND=access`，運行 `python -m hrms.migrate_csv_to_access` 來將現有 CSV 資料遷移到 Access 資料庫。
+* **Access 驅動程式支援情況？**
+  Microsoft Access 驅動程式原生僅支援 Windows 系統。在 macOS 和 Linux 系統上，建議使用 CSV 後端或考慮其他資料庫（如 SQLite、PostgreSQL）。
 * **日期/布林型別要怎麼處理？**
   系統內部統一使用字串格式處理日期，並提供專門的日期工具進行解析和格式化；布林值統一處理為 "true"/"false" 字串。
 
