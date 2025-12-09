@@ -418,7 +418,8 @@ class TrainingRecordWindow(QDialog):
                 # 取得證照名稱
                 item_repo = CertifyItemRepository(uow.session)
                 for record in records[:50]:
-                    item = item_repo.get_by_pk(None, record.Certify_ID)  # 這裡需要改進
+                    # 使用 get() 方法根據 Certify_ID 查詢（因為 Certify_ID 在實務上應該是唯一）
+                    item = item_repo.get(Certify_ID=record.Certify_ID)
                     if item:
                         certify_names[record.Certify_ID] = item.Certify_Name
         except:

@@ -60,6 +60,10 @@ class BasicWindow(QDialog):
         # 分頁控制區域
         pagination_group = self._create_pagination_group()
         main_layout.addWidget(pagination_group)
+        
+        # 載入表單區域的部門選項（因為表單區域剛初始化完成）
+        if hasattr(self, 'dept'):
+            self._load_dept_options_to_form()
     
     def _create_search_group(self) -> QGroupBox:
         """建立搜尋區域"""
@@ -373,14 +377,29 @@ class BasicWindow(QDialog):
                 service = LookupService(uow.session)
                 dept_codes = service.list_dept_codes()
                 
+                # 搜尋區域的部門下拉選單（一定存在）
                 self.search_dept.clear()
                 self.search_dept.addItem("", "")
                 self.search_dept.addItems(dept_codes)
                 
+                # 表單區域的部門下拉選單（可能還沒初始化）
+                if hasattr(self, 'dept'):
+                    self.dept.clear()
+                    self.dept.addItems(dept_codes)
+        except Exception as e:
+            QMessageBox.warning(self, "警告", f"載入部門選項失敗:\n{str(e)}")
+    
+    def _load_dept_options_to_form(self):
+        """載入表單區域的部門選項（確保表單區域已初始化）"""
+        try:
+            with UnitOfWork() as uow:
+                service = LookupService(uow.session)
+                dept_codes = service.list_dept_codes()
+                
                 self.dept.clear()
                 self.dept.addItems(dept_codes)
         except Exception as e:
-            QMessageBox.warning(self, "警告", f"載入部門選項失敗:\n{str(e)}")
+            QMessageBox.warning(self, "警告", f"載入表單部門選項失敗:\n{str(e)}")
     
     def _on_search_changed(self):
         """搜尋條件變更時"""

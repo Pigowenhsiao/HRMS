@@ -126,12 +126,13 @@ class ShiftWindow(QDialog):
         shift_code = self.table_model.item(index.row(), 0).text()
         self._load_shift(shift_code)
     
-    def _load_shift(self, shift: str):
-        """載入班別資料"""
+    def _load_shift(self, shift_code: str):
+        """載入班別資料（使用班別代碼查詢）"""
         try:
             with UnitOfWork() as uow:
                 repo = ShiftRepository(uow.session)
-                shift_obj = repo.get_by_pk(shift)
+                # 使用 Shift 欄位查詢（不是主鍵識別碼）
+                shift_obj = repo.get(Shift=shift_code)
                 
                 if shift_obj:
                     self.shift.setText(shift_obj.Shift or "")

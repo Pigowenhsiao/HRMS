@@ -214,7 +214,7 @@ class CertifyItemsWindow(QDialog):
         try:
             with UnitOfWork() as uow:
                 repo = CertifyItemRepository(uow.session)
-                item = repo.get_by_pk(dept, certify_id)
+                item = repo.get_by_pk((dept, certify_id))
                 
                 if item:
                     self.dept.setCurrentText(item.Dept or "")
@@ -275,7 +275,7 @@ class CertifyItemsWindow(QDialog):
                     "Active": self.active.isChecked()
                 }
                 
-                repo.upsert(dept, data)
+                repo.upsert((dept, certify_id), data)
                 
                 QMessageBox.information(self, "成功", "證照項目已儲存")
                 self._load_data()
@@ -303,7 +303,7 @@ class CertifyItemsWindow(QDialog):
             try:
                 with UnitOfWork() as uow:
                     repo = CertifyItemRepository(uow.session)
-                    success = repo.delete(dept, certify_id)
+                    success = repo.delete((dept, certify_id))
                     
                     if success:
                         QMessageBox.information(self, "成功", f"證照項目 {certify_id} 已刪除")

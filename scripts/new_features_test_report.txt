@@ -1,0 +1,103 @@
+================================================================================
+新功能測試報告
+================================================================================
+測試時間: 2025-12-10 05:07:49
+結束時間: 2025-12-10 05:07:52
+總耗時: 2.60 秒
+================================================================================
+
+測試結果統計:
+  總測試數: 28
+  通過: 28
+  失敗: 0
+  警告: 0
+
+✅ 測試結果: 全部通過
+
+詳細測試結果:
+--------------------------------------------------------------------------------
+ 1. [✅] 導入 domain.models.certification
+     訊息: 成功導入 domain.models.certification
+
+ 2. [✅] 導入 repositories.certification
+     訊息: 成功導入 repositories.certification
+
+ 3. [✅] 導入 UnitOfWork
+     訊息: 成功導入 hrms.core.db.unit_of_work_sqlite.UnitOfWork
+
+ 4. [✅] 導入 BasicCSVWindow
+     訊息: 成功導入 hrms.ui.qt.windows.basic_csv_window.BasicCSVWindow
+
+ 5. [✅] 導入 ShopWindow
+     訊息: 成功導入 hrms.ui.qt.windows.shop_window.ShopWindow
+
+ 6. [✅] ShopWindow 類結構
+     訊息: 類名: ShopWindow; 模塊: hrms.ui.qt.windows.shop_window; ✓ 含有 __init__ 方法; 父類: BasicCSVWindow
+
+ 7. [✅] 導入 CertifyManagementWindow
+     訊息: 成功導入 hrms.ui.qt.windows.certify_management_window.CertifyManagementWindow
+
+ 8. [✅] CertifyManagementWindow 類結構
+     訊息: 類名: CertifyManagementWindow; 模塊: hrms.ui.qt.windows.certify_management_window; ✓ 含有 __init__ 方法; 父類: QDialog
+
+ 9. [✅] 導入 CertifyType
+     訊息: 成功導入 hrms.ui.qt.windows.certify_type_window_new.CertifyTypeWindow
+
+10. [✅] CertifyType 類結構
+     訊息: 類名: CertifyTypeWindow; 模塊: hrms.ui.qt.windows.certify_type_window_new; ✓ 含有 __init__ 方法; 父類: QDialog
+
+11. [✅] 導入 Certify
+     訊息: 成功導入 hrms.ui.qt.windows.certify_window_new.CertifyWindow
+
+12. [✅] Certify 類結構
+     訊息: 類名: CertifyWindow; 模塊: hrms.ui.qt.windows.certify_window_new; ✓ 含有 __init__ 方法; 父類: QDialog
+
+13. [✅] 導入 CertifyItems
+     訊息: 成功導入 hrms.ui.qt.windows.certify_items_window_new.CertifyItemsWindow
+
+14. [✅] CertifyItems 類結構
+     訊息: 類名: CertifyItemsWindow; 模塊: hrms.ui.qt.windows.certify_items_window_new; ✓ 含有 __init__ 方法; 父類: QDialog
+
+15. [✅] 導入 CertifyRecord
+     訊息: 成功導入 hrms.ui.qt.windows.certify_record_window_new.CertifyRecordWindow
+
+16. [✅] CertifyRecord 類結構
+     訊息: 類名: CertifyRecordWindow; 模塊: hrms.ui.qt.windows.certify_record_window_new; ✓ 含有 __init__ 方法; 父類: QDialog
+
+17. [✅] 導入 CertifyToolMap
+     訊息: 成功導入 hrms.ui.qt.windows.certify_tool_map_window.CertifyToolMapWindow
+
+18. [✅] CertifyToolMap 類結構
+     訊息: 類名: CertifyToolMapWindow; 模塊: hrms.ui.qt.windows.certify_tool_map_window; ✓ 含有 __init__ 方法; 父類: BasicCSVWindow
+
+19. [✅] 導入 CertifyTypeWindow (SQLite)
+     訊息: 成功導入 hrms.ui.qt.windows.certify_type_window_new.CertifyTypeWindow
+
+20. [✅] CertifyTypeWindow (SQLite) 類結構
+     訊息: 類名: CertifyTypeWindow; 模塊: hrms.ui.qt.windows.certify_type_window_new; ✓ 含有 __init__ 方法; 父類: QDialog
+
+21. [✅] 導入 CertifyWindow (SQLite)
+     訊息: 成功導入 hrms.ui.qt.windows.certify_window_new.CertifyWindow
+
+22. [✅] CertifyWindow (SQLite) 類結構
+     訊息: 類名: CertifyWindow; 模塊: hrms.ui.qt.windows.certify_window_new; ✓ 含有 __init__ 方法; 父類: QDialog
+
+23. [✅] SQLite 數據庫連接
+     訊息: 成功連接到數據庫
+
+24. [✅] CERTIFY 數據表
+     訊息: 表存在, 記錄數: 4
+
+25. [✅] CERTIFY_TYPE 數據表
+     訊息: 表存在, 記錄數: 4
+
+26. [✅] CERTIFY_ITEMS 數據表
+     訊息: 表存在, 記錄數: 288
+
+27. [✅] CertifyTypeRepository
+     訊息: 成功創建 Repository 實例
+
+28. [✅] CertifyRepository
+     訊息: 成功創建 Repository 實例
+
+================================================================================

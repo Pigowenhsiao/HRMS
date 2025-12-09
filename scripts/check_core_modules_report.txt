@@ -1,0 +1,303 @@
+HRMS 系統核心功能模組檢查報告
+================================
+
+檢查日期: 2025-12-10
+檢查目錄: hrms/ui/qt/windows/
+
+---
+
+## 1. 員工基本資料管理 - basic_window_new.py
+
+### 模組狀態: ✅ 存在且完整
+
+### Repository 使用情況:
+- ✅ 正確使用 `BasicRepository` (行 16, 279, 451, 512, 555)
+- ✅ 正確使用 `LookupService` (行 16, 373)
+
+### 功能完整性:
+- ✅ **新增 (Create)**: 透過 `_on_save()` 方法完整實現
+- ✅ **讀取 (Read)**: 
+  - 透過 `_load_data()` 載入列表
+  - 透過 `_load_employee()` 載入單筆資料
+  - 支援搜尋和分頁功能
+- ✅ **更新 (Update)**: 透過 `repo.upsert()` 完整實現
+- ✅ **刪除 (Delete)**: 透過 `repo.delete()` 完整實現，包含確認對話框
+- ✅ **查詢 (Search)**: 
+  - 支援員工編號、姓名模糊搜尋
+  - 支援部門篩選
+  - 支援在職狀態篩選
+  - 即時搜尋響應
+
+### UI 完整性:
+- ✅ 現代化 UI 設計，包含搜尋區、表格區、表單區、分頁控制
+- ✅ 資料驗證（必填欄位檢查）
+- ✅ 資料匯出功能（Excel）
+- ✅ 雙擊表格載入資料
+- ✅ 分頁功能（每頁 50 筆）
+
+### 優點:
+- 完整的錯誤處理和訊息提示
+- 支援分頁顯示，效能較佳
+- 資料驗證完善
+- 清晰的 UI 布局
+
+---
+
+## 2. 部門管理 - dept_window_new.py
+
+### 模組狀態: ✅ 存在且完整
+
+### Repository 使用情況:
+- ✅ 正確使用 `SectionRepository` (行 14, 101, 129, 163, 206)
+- ✅ 正確使用 `BasicRepository` 檢查外鍵關聯 (行 14, 168, 201)
+
+### 功能完整性:
+- ✅ **新增 (Create)**: 透過 `_on_save()` 完整實現
+- ✅ **讀取 (Read)**: 
+  - 透過 `_load_data()` 載入列表
+  - 透過 `_load_section()` 載入單筆資料
+- ✅ **更新 (Update)**: 透過 `repo.upsert()` 完整實現
+- ✅ **刪除 (Delete)**: 完整實現，包含外鍵檢查（確認部門下無員工）
+- ⚠️ **查詢 (Search)**: 缺少搜尋功能，僅有基本列表顯示
+
+### UI 完整性:
+- ✅ 表單區域（部門代碼、名稱、說明、主管）
+- ✅ 表格顯示區域
+- ✅ 雙擊表格載入資料
+- ✅ 完整的操作按鈕（儲存、刪除、清空）
+
+### 缺失:
+- 缺少搜尋功能
+- 缺少資料匯出功能
+
+---
+
+## 3. 區域管理 - area_window_new.py
+
+### 模組狀態: ✅ 存在且完整
+
+### Repository 使用情況:
+- ✅ 正確使用 `AreaRepository` (行 14, 104, 141, 174, 209)
+
+### 功能完整性:
+- ✅ **新增 (Create)**: 透過 `_on_save()` 完整實現
+- ✅ **讀取 (Read)**: 
+  - 透過 `_load_data()` 載入列表
+  - 透過 `_load_area()` 載入單筆資料
+- ✅ **更新 (Update)**: 透過 `repo.upsert()` 完整實現
+- ✅ **刪除 (Delete)**: 透過 `repo.delete()` 完整實現
+- ✅ **查詢 (Search)**: 支援狀態篩選（有效/全部）
+
+### UI 完整性:
+- ✅ 搜尋條件區域（狀態篩選）
+- ✅ 表單區域（區域代碼、說明、狀態）
+- ✅ 表格顯示區域
+- ✅ 雙擊表格載入資料
+- ✅ 完整的操作按鈕（儲存、刪除、清空）
+
+### 優點:
+- 包含狀態篩選功能
+- 欄位驗證完整
+- 資料顯示清晰
+
+---
+
+## 4. 職務管理 - job_window_new.py
+
+### 模組狀態: ✅ 存在但過於簡單
+
+### Repository 使用情況:
+- ✅ 正確使用 `JobRepository` (行 15, 84, 117, 148)
+
+### 功能完整性:
+- ✅ **新增 (Create)**: 透過 `_on_save()` 實現
+- ✅ **讀取 (Read)**: 
+  - 透過 `_load_data()` 載入列表
+  - 透過表格雙擊載入單筆資料
+- ✅ **更新 (Update)**: 透過 `repo.upsert()` 實現
+- ✅ **刪除 (Delete)**: 透過 `repo.delete()` 實現
+- ⚠️ **查詢 (Search)**: 缺少搜尋功能
+
+### UI 完整性:
+- ⚠️ 過於簡單，僅有基本欄位（職務名稱）
+- ✅ 表格顯示區域
+- ✅ 基本的操作按鈕
+
+### 缺失:
+- 欄位過少，實用性有限
+- 缺少搜尋功能
+- 缺少進階功能（如匯出）
+- UI 設計簡陋
+
+### 建議:
+- 增加職務說明、狀態等欄位
+- 增加搜尋功能
+
+---
+
+## 5. 班別管理 - shift_window_new.py
+
+### 模組狀態: ✅ 存在且完整
+
+### Repository 使用情況:
+- ✅ 正確使用 `ShiftRepository` (行 14, 96, 133, 168, 205)
+- ✅ 正確使用 `SectionRepository` 載入部門選項 (行 14, 101)
+
+### 功能完整性:
+- ✅ **新增 (Create)**: 透過 `_on_save()` 完整實現
+- ✅ **讀取 (Read)**: 
+  - 透過 `_load_data()` 載入列表
+  - 透過 `_load_shift()` 載入單筆資料
+- ✅ **更新 (Update)**: 透過 `repo.upsert()` 完整實現
+- ✅ **刪除 (Delete)**: 透過 `repo.delete()` 完整實現
+- ⚠️ **查詢 (Search)**: 缺少搜尋功能
+
+### UI 完整性:
+- ✅ 表單區域（班別代碼、部門、說明、主管、狀態）
+- ✅ 部門下拉選單（從 SectionRepository 載入）
+- ✅ 表格顯示區域，包含完整欄位顯示
+- ✅ 雙擊表格載入資料
+- ✅ 完整的操作按鈕（儲存、刪除、清空）
+
+### 優點:
+- 與部門關聯正確實現
+- 表格顯示資訊完整
+- 欄位驗證完整
+
+### 缺失:
+- 缺少搜尋功能
+- 缺少資料匯出功能
+
+---
+
+## 6. 認證項目 - certify_items_window.py
+
+### 模組狀態: ⚠️ 存在但為 CSV 版本，不是 SQLite 版本
+
+### Repository 使用情況:
+- ❌ **未使用任何 Repository**，直接操作 CSV 檔案
+- ⚠️ 繼承自 `BasicCSVWindow`，使用 CSV 檔案 `CERTIFY_ITEMS.csv`
+
+### 功能完整性:
+- ✅ **新增 (Create)**: 繼承自 BasicCSVWindow
+- ✅ **讀取 (Read)**: 繼承自 BasicCSVWindow
+- ✅ **更新 (Update)**: 繼承自 BasicCSVWindow
+- ✅ **刪除 (Delete)**: 繼承自 BasicCSVWindow
+- ✅ **查詢 (Search)**: 透過表格顯示和雙擊載入
+
+### UI 完整性:
+- ✅ 表單欄位（部門、認證ID、認證類型、認證名稱、時間、等級等）
+- ✅ 支援 Lookup 功能（關聯其他 CSV 檔案）
+- ✅ 表格顯示
+- ⚠️ 使用 CSV 而非 SQLite，與其他新模組不一致
+
+### 問題:
+- **重大問題**: 未使用 Repository 模式，與系統架構不一致
+- 使用 CSV 檔案而非 SQLite 資料庫
+- 缺少資料驗證（依賴 CSV 基礎類別）
+
+### 建議:
+- 需要重構為 SQLite 版本，使用 `CertifyItemRepository`
+- 參考其他 *_window_new.py 的實作方式
+
+---
+
+## 7. 認證記錄 - certify_record_window.py
+
+### 模組狀態: ⚠️ 存在但為 CSV 版本，不是 SQLite 版本
+
+### Repository 使用情況:
+- ❌ **未使用任何 Repository**，直接操作 CSV 檔案
+- ⚠️ 繼承自 `BasicCSVWindow`，使用 CSV 檔案 `CERTIFY_RECORD.csv`
+
+### 功能完整性:
+- ✅ **新增 (Create)**: 繼承自 BasicCSVWindow
+- ✅ **讀取 (Read)**: 繼承自 BasicCSVWindow
+- ✅ **更新 (Update)**: 繼承自 BasicCSVWindow
+- ✅ **刪除 (Delete)**: 繼承自 BasicCSVWindow
+- ✅ **查詢 (Search)**: 透過表格顯示和雙擊載入
+
+### UI 完整性:
+- ✅ 表單欄位（識別碼、員工ID、認證編號、更新日期、狀態等）
+- ✅ 支援 Lookup 功能（關聯員工、認證項目等）
+- ✅ 表格顯示
+- ⚠️ 使用 CSV 而非 SQLite，與其他新模組不一致
+
+### 問題:
+- **重大問題**: 未使用 Repository 模式，與系統架構不一致
+- 使用 CSV 檔案而非 SQLite 資料庫
+- 缺少資料驗證
+
+### 建議:
+- 需要重構為 SQLite 版本，使用 `CertifyRecordRepository`
+- 參考其他 *_window_new.py 的實作方式
+
+---
+
+## 8. 訓練記錄 - training_record_window.py
+
+### 模組狀態: ⚠️ 存在但為 CSV 版本，不是 SQLite 版本
+
+### Repository 使用情況:
+- ❌ **未使用任何 Repository**，直接操作 CSV 檔案
+- ⚠️ 繼承自 `BasicCSVWindow`，使用 CSV 檔案 `TRAINING_RECORD.csv`
+
+### 功能完整性:
+- ✅ **新增 (Create)**: 繼承自 BasicCSVWindow
+- ✅ **讀取 (Read)**: 繼承自 BasicCSVWindow
+- ✅ **更新 (Update)**: 繼承自 BasicCSVWindow
+- ✅ **刪除 (Delete)**: 繼承自 BasicCSVWindow
+- ✅ **查詢 (Search)**: 透過表格顯示和雙擊載入
+
+### UI 完整性:
+- ✅ 表單欄位（認證編號、員工ID、認證ID、認證日期、類型等）
+- ✅ 支援 Lookup 功能（關聯員工、認證項目等）
+- ✅ 表格顯示
+- ⚠️ 使用 CSV 而非 SQLite，與其他新模組不一致
+
+### 問題:
+- **重大問題**: 未使用 Repository 模式，與系統架構不一致
+- 使用 CSV 檔案而非 SQLite 資料庫
+- 缺少資料驗證
+- 與 certify_record_window 功能重疱（需要確認業務區別）
+
+### 建議:
+- 需要重構為 SQLite 版本，使用 `TrainingRecordRepository`
+- 明確與 CertifyRecord 的業務區別
+- 參考其他 *_window_new.py 的實作方式
+
+---
+
+## 總結
+
+### Repository 使用一致性:
+- ✅ **良好**: basic_window_new.py, dept_window_new.py, area_window_new.py, shift_window_new.py
+- ⚠️ **過於簡單**: job_window_new.py（功能不完整）
+- ❌ **未使用**: certify_items_window.py, certify_record_window.py, training_record_window.py（使用 CSV）
+
+### 功能完整性評級:
+1. **basic_window_new.py** - ⭐⭐⭐⭐⭐ (5/5) - 功能最完整
+2. **dept_window_new.py** - ⭐⭐⭐⭐ (4/5) - 完整但缺少搜尋
+3. **area_window_new.py** - ⭐⭐⭐⭐ (4/5) - 完整但功能較簡單
+4. **shift_window_new.py** - ⭐⭐⭐⭐ (4/5) - 完整但缺少搜尋
+5. **job_window_new.py** - ⭐⭐ (2/5) - 過於簡單
+6. **certify_items_window.py** - ⭐⭐ (2/5) - 架構不一致
+7. **certify_record_window.py** - ⭐⭐ (2/5) - 架構不一致
+8. **training_record_window.py** - ⭐⭐ (2/5) - 架構不一致
+
+### 主要問題:
+1. **架構不一致**: 認證相關的三個模組使用 CSV 而非 SQLite
+2. **功能不完整**: 
+   - 多數模組缺少搜尋功能
+   - job_window_new.py 過於簡單
+3. **UI 體驗不一致**: 新舊版本混用，風格不統一
+
+### 建議優先處理:
+1. **高優先級**: 將認證相關模組重構為 SQLite 版本
+2. **中優先級**: 為所有模組統一加入搜尋功能
+3. **低優先級**: 豐富 job_window_new.py 的欄位和功能
+4. **長期**: 統一所有模組的 UI 設計風格和功能標準
+
+---
+
+報告產生完成。

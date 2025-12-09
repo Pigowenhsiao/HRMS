@@ -35,6 +35,22 @@ class CertifyItemRepository(BaseRepositorySQLAlchemy[CertifyItem]):
     def get_by_type(self, certify_type: str) -> List[CertifyItem]:
         """依類型查詢證照項目"""
         return self.list(filters={"Certify_Type": certify_type})
+    
+    def delete(self, pk: tuple) -> bool:
+        """
+        刪除證照項目（支援複合主鍵）
+        
+        Args:
+            pk: 複合主鍵元組 (Dept, Certify_ID)
+        
+        Returns:
+            是否成功刪除
+        """
+        obj = self.get_by_pk(pk)
+        if obj:
+            self.session.delete(obj)
+            return True
+        return False
 
 class TrainingRecordRepository(BaseRepositorySQLAlchemy[TrainingRecord]):
     """

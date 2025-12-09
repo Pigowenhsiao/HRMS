@@ -12,13 +12,13 @@ from hrms.ui.qt.windows.basic_window_new import BasicWindow
 from hrms.ui.qt.windows.dept_window_new import DeptWindow
 from hrms.ui.qt.windows.area_window_new import AreaWindow
 from hrms.ui.qt.windows.job_window_new import JobWindow
-from hrms.ui.qt.windows.certify_items_window import CertifyItemsWindow
-from hrms.ui.qt.windows.certify_record_window import CertifyRecordWindow
-from hrms.ui.qt.windows.training_record_window import TrainingRecordWindow
-from hrms.ui.qt.windows.shop_window import ShopWindow
-from hrms.ui.qt.windows.certify_type_window import CertifyTypeWindow
+from hrms.ui.qt.windows.certify_items_window_new import CertifyItemsWindow
+from hrms.ui.qt.windows.certify_record_window_new import CertifyRecordWindow
+from hrms.ui.qt.windows.training_record_window_new import TrainingRecordWindow
+from hrms.ui.qt.windows.shop_window_new import ShopWindow
+from hrms.ui.qt.windows.certify_management_window import CertifyManagementWindow
 from hrms.ui.qt.windows.authority_window import AuthorityWindow
-from hrms.ui.qt.windows.vac_type_window import VacTypeWindow
+from hrms.ui.qt.windows.vac_type_window_new import VacTypeWindow
 from hrms.ui.qt.windows.shift_window_new import ShiftWindow
 
 try:
@@ -187,31 +187,34 @@ class StartPage(QMainWindow):
     def _open_certify_window(self):
         """開啟證照管理視窗"""
         try:
-            # 這裡可以整合多個證照相關視窗
-            QMessageBox.information(self, "提示", "證照管理功能開發中...")
+            window = CertifyManagementWindow(self)
+            window.exec()
         except Exception as e:
-            QMessageBox.critical(self, "錯誤", f"錯誤:\n{str(e)}")
+            QMessageBox.critical(self, "錯誤", f"無法開啟證照管理視窗:\n{str(e)}")
     
     def _open_shift_window(self):
         """開啟班別管理視窗"""
         try:
-            QMessageBox.information(self, "提示", "班別管理功能開發中...")
+            window = ShiftWindow(self)
+            window.exec()
         except Exception as e:
-            QMessageBox.critical(self, "錯誤", f"錯誤:\n{str(e)}")
+            QMessageBox.critical(self, "錯誤", f"無法開啟班別管理視窗:\n{str(e)}")
     
     def _open_shop_window(self):
         """開啟工站管理視窗"""
         try:
-            QMessageBox.information(self, "提示", "工站管理功能開發中...")
+            window = ShopWindow(self)
+            window.exec()
         except Exception as e:
-            QMessageBox.critical(self, "錯誤", f"錯誤:\n{str(e)}")
+            QMessageBox.critical(self, "錯誤", f"無法開啟工站管理視窗:\n{str(e)}")
     
     def _open_vac_type_window(self):
         """開啟假別管理視窗"""
         try:
-            QMessageBox.information(self, "提示", "假別管理功能開發中...")
+            window = VacTypeWindow(self)
+            window.exec()
         except Exception as e:
-            QMessageBox.critical(self, "錯誤", f"錯誤:\n{str(e)}")
+            QMessageBox.critical(self, "錯誤", f"無法開啟假別管理視窗:\n{str(e)}")
     
     def _open_authority_window(self):
         """開啟權限管理視窗"""

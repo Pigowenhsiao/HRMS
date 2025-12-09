@@ -1,0 +1,212 @@
+========================================
+CSV 模組檢查報告
+日期: 2025-12-10
+========================================
+
+## 檢查目標
+檢查 hrms/ui/qt/windows/ 目錄下三個使用 CSV 舊架構的模組：
+1. certify_items_window.py - 認證項目
+2. certify_record_window.py - 認證記錄
+3. training_record_window.py - 訓練記錄
+
+## 檢查結果
+
+### 1. certify_items_window.py (認證項目)
+
+**狀態: 使用 CSV 架構**
+
+**使用的主檔案:**
+- data/CERTIFY_ITEMS.csv
+
+**CSV 格式:**
+```
+Columns: Dept,Certify_ID,Certify_Type,Certify_Name,Certify_time,Certify_Grade,Remark,Active,Score
+```
+
+**使用的 Lookup CSV 檔案:**
+1. data/L_Section.csv (部門對照)
+   - Key: Dept_Code
+   - Display: Dept_Name
+   
+2. data/CERTIFY_TYPE.csv (認證類型對照)
+   - Key: Certify_Type
+   - Display: Certify_Type
+   
+3. data/CERTIFY.csv (認證項目對照)
+   - Key: Certify
+   - Display: Certify + Certify_Desc
+
+**資料筆數:** 約 900+ 筆資料
+
+---
+
+### 2. certify_record_window.py (認證記錄)
+
+**狀態: 使用 CSV 架構**
+
+**使用的主檔案:**
+- data/CERTIFY_RECORD.csv
+
+**CSV 格式:**
+```
+Columns: 識別碼,EMP_ID,Certify_NO,Update_date,Active,Meno,Type
+```
+
+**使用的 Lookup CSV 檔案:**
+1. data/BASIC.csv (員工基本資料)
+   - Key: EMP_ID
+   - Display: EMP_ID + C_Name
+   
+2. data/CERTIFY_ITEMS.csv (認證項目)
+   - Key: Certify_ID
+   - Display: Certify_ID + Certify_Name
+   
+3. data/CERTIFY_TYPE.csv (認證類型對照)
+   - Key: Certify_Type
+   - Display: Certify_Type
+
+**資料筆數:** 目前只有標題列，無資料
+
+---
+
+### 3. training_record_window.py (訓練記錄)
+
+**狀態: 使用 CSV 架構**
+
+**使用的主檔案:**
+- data/TRAINING_RECORD.csv
+
+**CSV 格式:**
+```
+Columns: Certify_No,EMP_ID,Certify_ID,Certify_date,Certify_type,update_date,Active,Remark,updater,Cer_type
+```
+
+**使用的 Lookup CSV 檔案:**
+1. data/BASIC.csv (員工基本資料)
+   - Key: EMP_ID
+   - Display: EMP_ID + C_Name
+   
+2. data/CERTIFY_ITEMS.csv (認證項目)
+   - Key: Certify_ID
+   - Display: Certify_ID + Certify_Name
+   
+3. data/CERTIFY_TYPE.csv (認證類型對照)
+   - 欄位1: Certify_type
+   - 欄位2: Cer_type
+   - Key: Certify_Type
+   - Display: Certify_Type
+
+**資料筆數:** 約 2,172,000+ 筆資料 (2百萬筆以上)
+
+---
+
+## data/ 目錄相關 CSV 檔案確認
+
+### 主檔案列表
+✓ data/CERTIFY_ITEMS.csv (110KB, 存在)
+✓ data/CERTIFY_RECORD.csv (1KB, 存在) 
+✓ data/TRAINING_RECORD.csv (2.1MB, 存在)
+
+### Lookup 檔案列表
+✓ data/L_Section.csv (2KB, 存在)
+✓ data/CERTIFY_TYPE.csv (1KB, 存在)
+✓ data/CERTIFY.csv (1KB, 存在)
+✓ data/BASIC.csv (135KB, 存在)
+
+所有需要的 CSV 檔案都存在於 data/ 目錄中。
+
+---
+
+## 修復建議計劃
+
+### 整體策略
+這三個模組都繼承自 `BasicCSVWindow` 類別，使用了 CSV 檔案操作。建議將它們重構為使用現有的 SQLite 資料庫架構。
+
+### 修復步驟
+
+#### 第一階段：建立資料庫對應
+
+1. **建立資料表結構**
+   - 在 SQLite 中建立對應的資料表
+   - CERTIFY_ITEMS -> certify_items 資料表
+   - CERTIFY_RECORD -> certify_records 資料表
+   - TRAINING_RECORD -> training_records 資料表
+
+2. **建立 Lookup 資料表**
+   - L_Section -> departments 資料表
+   - CERTIFY_TYPE -> certification_types 資料表
+   - CERTIFY -> certifications 資料表
+   - BASIC -> employees 資料表 (已存在)
+
+3. **資料遷移**
+   - 將 CSV 資料匯入 SQLite
+   - 特別注意 TRAINING_RECORD.csv 有 200 萬筆資料，需要分批處理
+   - 保持資料完整性
+
+#### 第二階段：重構 UI 模組
+
+1. **建立新的基礎視窗類別**
+   - 從 `BasicCSVWindow` 複製功能
+   - 改為使用 SQLiteRepository 模式
+   - 保持相同的 UI 介面和操作方法
+
+2. **重構三個視窗類別**
+   - 修改繼承關係，從 BasicCSVWindow 改為新的 SQLite 基礎類別
+   - 更新 lookup 邏輯，從 CSV 讀取改為 SQLite 查詢
+   - 更新資料操作邏輯，從 CSV 讀寫改為 SQLite CRUD
+
+3. **測試驗證**
+   - 確認所有 lookup 功能正常
+   - 確認 CRUD 操作正常
+   - 驗證大量資料處理效能 (特別是 TRAINING_RECORD)
+
+#### 第三階段：清理與最佳化
+
+1. **備份與清理**
+   - 備份原始 CSV 檔案
+   - 移除或封存不再使用的 CSV 檔案
+   
+2. **效能最佳化**
+   - 為 SQLite 資料表建立適當的索引
+   - 特別是 training_records 資料表需要優化查詢效能
+   - 考慮分頁載入大量資料
+
+### 風險評估
+
+**高風險:**
+- TRAINING_RECORD.csv 有超過 200 萬筆資料，遷移過程可能影響效能
+- 多個模組共享相同的 lookup 資料表，需要確保一致性
+
+**中風險:**
+- UI 操作習慣改變可能影響使用者
+- 需要完整的測試覆蓋
+
+**低風險:**
+- 資料格式相對簡單，轉換風險低
+- 有現有的 SQLite 架構可以參考
+
+### 預估工時
+
+- 資料庫結構設計與建立: 4 小時
+- 資料遷移腳本: 6 小時 (主要是 TRAINING_RECORD 的效能處理)
+- 基礎視窗類別重構: 4 小時
+- 三個視窗模組重構: 6 小時
+- 測試與調整: 4 小時
+- **總計: 約 24 小時 (3 個工作天)**
+
+---
+
+## 建議優先順序
+
+1. **優先處理:** certify_items_window.py
+   - 資料量適中 (約 900 筆)
+   - 相對獨立，lookup 關係較簡單
+   
+2. **其次處理:** certify_record_window.py
+   - 資料量小，風險低
+   - 可以作為驗證新架構的測試案例
+
+3. **最後處理:** training_record_window.py
+   - 資料量極大 (200 萬筆)
+   - 需要特別注意效能優化
+   - 建議在其他兩個模組驗證完成後再處理
